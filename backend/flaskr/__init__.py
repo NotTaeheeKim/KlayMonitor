@@ -68,6 +68,8 @@ def create_app(test_config=None):
 
     @app.route('/testSubquery')
     def testquery():
+        # Obtain address as parameter
+        targetAddress = request.args.get("address")
         # Define transport and url endpoint
         transport = AIOHTTPTransport(url="https://api.studio.thegraph.com/query/74689/klaytrackertest/v0.1")
 
@@ -77,20 +79,15 @@ def create_app(test_config=None):
         # Provide a GraphQL query
         query = gql(
             """
-                {
-                    issues(first: 5) {
-                        id
-                        amount
-                        blockNumber
-                        blockTimestamp
-                    }
-                    redeems(first: 5) {
-                        id
-                        amount
-                        blockNumber
-                        blockTimestamp
-                    }
+            query{
+                transfers{
+                    id
+                    from
+                    to
+                    value
+                    # other desired fields
                 }
+            }
             """
         )
 
@@ -98,5 +95,15 @@ def create_app(test_config=None):
         result = client.execute(query)
         print(result)
 
-        return result
+        #Calculate
+        balance = 0
+        for element in result["transfers"]:
+            if element["from"] == targetAddress:
+                balance-=int(element["value"])
+            elif element["to"] == targetAddress:
+                balance+=int(element["value"])
+
+        # test with address: 0x28c6c06298d514db089934071355e5743bf21d60
+
+        return str(balance)
     return app

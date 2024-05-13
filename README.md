@@ -23,6 +23,10 @@ python3 -m venv .venv
 . .venv/bin/activate
 python3 -m pip install Flask
 python3 -m pip install web3py-ext
+```
+
+### Subgraph
+```
 python3 -m pip install "gql[all]"
 ```
 ### Database

@@ -93,17 +93,25 @@ def create_app(test_config=None):
 
         # Execute the query on the transport
         result = client.execute(query)
-        print(result)
+
 
         #Calculate
+        history = {}
         balance = 0
+        count = 0
         for element in result["transfers"]:
             if element["from"] == targetAddress:
                 balance-=int(element["value"])
+                history.update({str(count):str(balance)})
+                count +=1
+
             elif element["to"] == targetAddress:
                 balance+=int(element["value"])
+                history.update({str(count):str(balance)})
+                count +=1
 
         # test with address: 0x28c6c06298d514db089934071355e5743bf21d60
-
-        return str(balance)
+        print(history)
+        history = json.dumps(history)
+        return history
     return app

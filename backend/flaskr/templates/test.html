@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<html>
+    <head>
+        <title>KlayTracker</title>
+
+
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+
+        <script>
+            $.getJSON( "http://127.0.0.1:5000/test", function( data ) {
+                var items = [];
+
+                $.each( data, function( key, val ) {
+                    items.push( "<li id='" + key + "'>" + key + ":" + val + "</li>" );
+                });
+
+                $( "<ul/>", {
+                    html: items.join( "" )
+                }).appendTo( "body" );
+            });
+        </script>
+    </head>
+
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light bg-primary rounded-bottom justify-content-between" style="padding-left: 1%;">
+            <a class="navbar-brand text-white h1" href="#">
+                <span class="text-dark"><strong>{</strong></span>
+                <strong>Klay</strong>
+                <span class="text-dark"><strong>}</strong>Tracker</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link active text-light" href="#"><i class="fa fa-home" style="font-size:2vw;"></i></a>
+                    <a class="nav-item nav-link text-light" href="#"><i class="fa fa-money" style="font-size:2vw;"></i></a>
+                    <a class="nav-item nav-link text-light " href="#"><i class="fa fa-address-book" style="font-size:2vw;"></i></a>
+                </div>
+            </div>
+        </nav>
+        <div>
+        <h2 style="padding: 1%;">Dashboard</h2>
+
+        <div class="row">
+            <div class="card shadow rounded-4 border-primary col-5"style="margin: 1%;padding: 1%;margin-right:2%">
+                <div class="card-head rounded-top border-muted border-width-1%" style="padding-left: 0.5%;padding-top: 0.5%">
+                    <h4>Track Values</h4>
+                </div>
+                <div class="card-body">
+                    <div>
+                        <canvas id="myChart"></canvas>
+                    </div>
+
+                    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                    <script>
+                        $.getJSON( "http://127.0.0.1:5000/test2", function( data ) {
+                            const ctx = document.getElementById('myChart');
+                            const values = [];
+
+                            $.each( data, function( key, val ) {
+                                values.push( val );
+                            });
+
+                            new Chart(ctx, {
+                                type: 'line',
+                                
+                                data: {
+                                labels: ['1', '2', '3', '4', '5', '6'],
+                                
+                                datasets: [{
+                                    label: 'Value of Klay',
+                                    data: values,
+                                    borderWidth: 2,
+                                    borderColor: "blue"
+                                }]
+                                },
+                                options: {
+                                scales: {
+                                    y: {
+                                    beginAtZero: true
+                                    }
+                                }
+                                }
+                            });
+                        });
+                    </script>
+                </div>
+            </div>
+
+
+            <div class="card col-sm" style="margin: 1%;padding: 1%;">
+                <h3>A Placeholder Title</h3>
+                Duis hendrerit est a ante pharetra, sed euismod ante mattis. Aliquam lacus nunc, commodo sed posuere a, congue ut est. Aenean cursus lacus lectus, id blandit dolor lobortis id. Donec a auctor diam. Nullam rutrum at elit maximus fringilla. Sed eget scelerisque odio, non rutrum purus. Proin ac finibus risus. Quisque fermentum fringilla eros, a malesuada massa sodales eu. Nulla ante quam, vulputate vitae lectus id, faucibus venenatis felis. Ut in porttitor turpis. Praesent ultrices risus in magna maximus, vel commodo arcu auctor.
+
+            </div>
+        </div>
+
+
+    </body>
+</html>
+

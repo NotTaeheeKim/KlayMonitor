@@ -11,20 +11,31 @@ from gql.transport.aiohttp import AIOHTTPTransport
 import json
 
 from flask_httpauth import HTTPBasicAuth
+import bcrypt
 
 auth = HTTPBasicAuth()
 @auth.verify_password
 def verify_password(username,password):
     if username in users:
-        return users.get(username) == password 
+        passwordbytes = password.encode("utf-8")
+        passwordsalt = usersalts.get(username)
+        return users.get(username) == bcrypt.hashpw(passwordbytes,passwordsalt)
     return False
 
+# ===== HARDCODED TEST DATA ======
 
-user = "ExampleUser"
-pw = "ExamplePassword"
+user = "User"
+pw = "123"
 
-users = {user:pw}
+pwsalt = bcrypt.gensalt()
+pwbytes = pw.encode("utf-8")
+pwhash = bcrypt.hashpw(pwbytes,pwsalt)
 
+
+users = {user:pwhash}
+usersalts = {user:pwsalt}
+
+# ===== HARDCODED TEST DATA ======
 
 
 
@@ -53,6 +64,8 @@ def create_app(test_config=None):
     #     pass
 
     # a simple page that says hello
+
+
     @app.route('/')
     @auth.login_required
     def hello():
@@ -61,6 +74,9 @@ def create_app(test_config=None):
 
     @app.route('/test')
     def retrieve():
+        print(bcrypt.gensalt())
+        return "hehe"
+
         klaytnBalance = "testing"
         balance = 0
         privateKey = "0xf0b695328ee59cec0bbf2f2efd309423c8e1cb427f82ac0ea3552d30c63f6f68"

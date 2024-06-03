@@ -22,7 +22,7 @@ def verify_password(username,password):
         return users.get(username) == bcrypt.hashpw(passwordbytes,passwordsalt)
     return False
 
-# ===== HARDCODED TEST DATA ======
+# ====== HARDCODED TEST DATA ======
 
 user = "User"
 pw = "123"
@@ -35,7 +35,7 @@ pwhash = bcrypt.hashpw(pwbytes,pwsalt)
 users = {user:pwhash}
 usersalts = {user:pwsalt}
 
-# ===== HARDCODED TEST DATA ======
+# ====== HARDCODED TEST DATA ======
 
 
 
@@ -75,7 +75,6 @@ def create_app(test_config=None):
     @app.route('/test')
     def retrieve():
         print(bcrypt.gensalt())
-        return "hehe"
 
         klaytnBalance = "testing"
         balance = 0

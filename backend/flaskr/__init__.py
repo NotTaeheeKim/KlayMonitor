@@ -10,6 +10,22 @@ from gql.transport.aiohttp import AIOHTTPTransport
 
 import json
 
+from flask_httpauth import HTTPBasicAuth
+
+auth = HTTPBasicAuth()
+@auth.verify_password
+def verify_password(username,password):
+    if username in users:
+        return users.get(username) == password 
+    return False
+
+
+user = "ExampleUser"
+pw = "ExamplePassword"
+
+users = {user:pw}
+
+
 
 
 def create_app(test_config=None):
@@ -38,6 +54,7 @@ def create_app(test_config=None):
 
     # a simple page that says hello
     @app.route('/')
+    @auth.login_required
     def hello():
         return render_template("test.html")
     

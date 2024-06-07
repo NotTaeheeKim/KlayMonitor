@@ -2,7 +2,7 @@ import os
 # from web3py_ext import extend
 # from web3 import AsyncWeb3, AsyncHTTPProvider
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 from web3 import Web3
 
 from gql import gql, Client
@@ -66,7 +66,7 @@ def create_app(test_config=None):
     # a simple page that says hello
 
 
-    @app.route('/')
+    @app.route('/testpage')
     @auth.login_required
     def testRender():
         return render_template("test.html")
@@ -74,6 +74,10 @@ def create_app(test_config=None):
     @app.route('/home')
     def homeRender():
         return render_template("home.html")
+    
+    @app.route("/")
+    def redirectToHome():
+        return redirect("/home")
 
     @app.route('/login')
     def loginRender():
@@ -95,26 +99,25 @@ def create_app(test_config=None):
     def tableRender():
         return render_template("table.html")
 
-    @app.route('/test')
+    @app.route('/fetchBalance')
     def retrieve():
         print(bcrypt.gensalt())
-
-        klaytnBalance = "testing"
         balance = 0
-        privateKey = "0xf0b695328ee59cec0bbf2f2efd309423c8e1cb427f82ac0ea3552d30c63f6f68"
-        address = Web3.to_checksum_address("0x7cd2bb56142bf8ab104c8c1eddef9b1c32b04979")
 
-        # w3 = AsyncWeb3(AsyncWeb3.AsyncHTTPProvider('https://public-en-baobab.klaytn.net', request_kwargs={'ssl':False}))
-        w3 = Web3(Web3.HTTPProvider('https://public-en-baobab.klaytn.net'))
 
         try:
+            address = Web3.to_checksum_address(request.args.get("address"))
+
+            # w3 = AsyncWeb3(AsyncWeb3.AsyncHTTPProvider('https://public-en-baobab.klaytn.net', request_kwargs={'ssl':False}))
+            w3 = Web3(Web3.HTTPProvider('https://ethereum-rpc.publicnode.com'))
             result = w3.eth.get_balance(address)
             print(result)
-            balance = result / 1000000000000000000
+            balance = result 
         except Exception as e:
             print(f"Error: {e}")
+            return "Error Occurred"
 
-        return {"address":address, "balance": balance}
+        return balance
 
     @app.route('/test2')
     def fetch():

@@ -91,3 +91,9 @@ type Unpause @entity(immutable: true) {
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
+
+type Query @entity(immutable: true){
+    id:Bytes!
+    transfers:Transfer
+
+}

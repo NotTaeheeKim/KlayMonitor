@@ -76,14 +76,24 @@ def create_app(test_config=None):
         return render_template("home.html")
 
     @app.route('/login')
-    @auth.login_required
     def loginRender():
         return render_template("login.html")
 
     @app.route('/register')
-    @auth.login_required
     def registerRender():
         return render_template("register.html")
+
+    @app.route('/profile')
+    def profileRender():
+        return render_template("profile.html")
+
+    @app.route('/index')
+    def indexRender():
+        return render_template("index.html")
+    
+    @app.route('/table')
+    def tableRender():
+        return render_template("table.html")
 
     @app.route('/test')
     def retrieve():

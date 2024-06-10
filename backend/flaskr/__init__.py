@@ -12,6 +12,7 @@ import json
 
 from flask_httpauth import HTTPBasicAuth
 import bcrypt
+import time
 
 auth = HTTPBasicAuth()
 @auth.verify_password
@@ -97,7 +98,67 @@ def create_app(test_config=None):
     
     @app.route('/table')
     def tableRender():
-        return render_template("table.html")
+        # Obtain address as parameter
+        targetAddress = str(request.args.get("address"))
+        # Define transport and url endpoint
+        transport = AIOHTTPTransport(url="https://api.studio.thegraph.com/query/74689/klaytrackertest/v0.1")
+
+        # Create a GraphQL client using the defined transport
+        client = Client(transport=transport, fetch_schema_from_transport=True)
+
+        queryString = f"""query{{
+            transfers(
+                where: {{
+                    or: [
+                        {{ from: "{targetAddress}" }},
+                        {{ to: "{targetAddress}" }}
+                    ]
+                }}
+            ){{
+                transactionHash
+                from
+                to
+                value
+                blockTimestamp
+                # other desired fields
+            }}
+        }}"""
+        print(targetAddress)
+    
+        # Provide a GraphQL query
+        query = gql(
+            queryString
+        ) 
+
+        # Execute the query on the transport
+        try:    
+            result = client.execute(query)
+        except:
+            result = client.execute(gql("""query{
+                transfers{
+                    transactionHash
+                    from
+                    to
+                    value
+                    blockTimestamp
+                    # other desired fields
+                }
+            }
+            """)
+            )
+
+
+   
+        for element in result["transfers"]:  
+            # Get the local time from the timestamp
+            time_object = time.localtime(int(element["blockTimestamp"]))
+
+            # Format the time using strftime
+            formatted_time = time.strftime("%H:%M:%S %d/%m/%Y", time_object)
+            element["blockTimestamp"]=formatted_time
+
+
+        return render_template("table.html",data=result["transfers"])
 
     @app.route('/fetchBalance')
     def retrieve():
@@ -124,52 +185,8 @@ def create_app(test_config=None):
         # read database
         return {"1":30, "2": 40, "3":20, "4": 60, "5":70, "6": 50}
 
-    @app.route('/testSubquery')
-    def testquery():
-        # Obtain address as parameter
-        targetAddress = request.args.get("address")
-        # Define transport and url endpoint
-        transport = AIOHTTPTransport(url="https://api.studio.thegraph.com/query/74689/klaytrackertest/v0.1")
-
-        # Create a GraphQL client using the defined transport
-        client = Client(transport=transport, fetch_schema_from_transport=True)
-
-        # Provide a GraphQL query
-        query = gql(
-            """
-            query{
-                transfers{
-                    id
-                    from
-                    to
-                    value
-                    # other desired fields
-                }
-            }
-            """
-        )
-
-        # Execute the query on the transport
-        result = client.execute(query)
-
-
-        #Calculate
-        history = {}
-        balance = 0
-        count = 0
-        for element in result["transfers"]:
-            if element["from"] == targetAddress:
-                balance-=int(element["value"])
-                history.update({str(count):str(balance)})
-                count +=1
-
-            elif element["to"] == targetAddress:
-                balance+=int(element["value"])
-                history.update({str(count):str(balance)})
-                count +=1
-
-        # test with address: 0x28c6c06298d514db089934071355e5743bf21d60
-        print(history)
-        history = json.dumps(history)
-        return history
+    @app.route('/insertTest')
+    def insertTable():
+        result = ""
+        return result
     return app

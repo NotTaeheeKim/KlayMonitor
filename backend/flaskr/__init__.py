@@ -2,7 +2,7 @@ import os
 # from web3py_ext import extend
 # from web3 import AsyncWeb3, AsyncHTTPProvider
 
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, g
 from web3 import Web3
 
 from gql import gql, Client
@@ -14,6 +14,9 @@ from flask_httpauth import HTTPBasicAuth
 import bcrypt
 import time
 
+from flaskext.mysql import MySQL
+
+
 auth = HTTPBasicAuth()
 @auth.verify_password
 def verify_password(username,password):
@@ -22,6 +25,9 @@ def verify_password(username,password):
         passwordsalt = usersalts.get(username)
         return users.get(username) == bcrypt.hashpw(passwordbytes,passwordsalt)
     return False
+
+
+
 
 # ====== HARDCODED TEST DATA ======
 
@@ -43,6 +49,20 @@ usersalts = {user:pwsalt}
 def create_app(test_config=None):
 
     app = Flask(__name__)
+    # mysql = MySQL(app)
+
+    # app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+    # app.config['MYSQL_DATABASE_PORT'] = 3306
+    # app.config['MYSQL_DATABASE_USER'] = 'testuser'
+    # app.config['MYSQL_DATABASE_PASSWORD'] = 'pass'
+    # app.config['MYSQL_DATABASE_DB'] = 'klayTrackerDatabase'
+    # mysql.init_app(app)
+
+    # # cursor = mysql.connect().cursor()
+    # cursor = mysql.get_db().cursor()
+    # print("------------------------")
+    # print(cursor)
+    # print("------------------------")
 
     # # create and configure the app
     # app = Flask(__name__, instance_relative_config=True)
@@ -66,6 +86,12 @@ def create_app(test_config=None):
 
     # a simple page that says hello
 
+
+    # @app.route('/testdb')
+    # def testdb():
+    #     cursor.execute("SELECT * FROM TEAM")
+    #     data = cursor.fetchall()
+    #     return data
 
     @app.route('/testpage')
     @auth.login_required

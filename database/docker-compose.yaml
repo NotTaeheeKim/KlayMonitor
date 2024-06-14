@@ -1,15 +1,17 @@
 version: '3.1'
 
 services:
-  mysql:
-   image: mysql
-   container_name: db-mysql
-   ports:
-    - 3307:3306
-   environment:
-     MYSQL_DATABASE: klayTrackerDatabase
-     MYSQL_ROOT_PASSWORD: root
-     MYSQL_USER: testuser
-     MYSQL_PASSWORD: pass
-   volumes:
-    - ./KlayTracker:/docker-entrypoint-initdb.d
+
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: example
+      MARIADB_USER_NAME: testuser
+      MARIADB_USER_PASSWORD: pass
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080

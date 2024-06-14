@@ -12,4 +12,4 @@ services:
      MYSQL_USER: testuser
      MYSQL_PASSWORD: pass
    volumes:
-    - ./dump:/docker-entrypoint-initdb.d
+    - ./KlayTracker:/docker-entrypoint-initdb.d

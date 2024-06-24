@@ -228,13 +228,19 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     
     <script>
+        //Count number of elements with .shorten class
         var length = $(".shorten").length;
+
+        //Format and replace inner text of all elements with .shorten class
         for (let i = 0; i < length; i++){
+
+            //Set the title of the element to the original inner text value
             $(".shorten")[i].title = $(".shorten")[i].innerText;
             var num = $(".shorten")[i].innerText.length;
             $(".shorten")[i].innerText = $(".shorten")[i].innerText.substring(0,4)+"..."+$(".shorten")[i].innerText.substring(num-4,num+1);
         };
-
+        
+        //Display the title (the original inner text value) in tooltip
         $(function () {
             $('[data-toggle="tooltip"]').tooltip({placement:"right"});
         });
@@ -243,18 +249,26 @@
             $(".insertTitle")[i].title = $(".insertTitle")[i].innerText;
         }
 
+        
         const copyButton = document.getElementById('copy-button');
-        var clipboardValue = ''; 
 
-        const copyButtons = document.querySelectorAll('.copy-button'); // Select all buttons with class "copy-button"
+        // Select all buttons with class "copy-button"
+        const copyButtons = document.querySelectorAll('.copy-button'); 
 
+        //Track each button press
         copyButtons.forEach(button => {
         button.addEventListener('click', () => {
-            const buttonId = button.id;  // Get the unique ID of the clicked button
-            const buttonElement = document.getElementById(buttonId);
+
+            // Get the unique ID of the clicked button and fetch its title value
+            const buttonId = button.id;  
+            const buttonElement = document.getElementById(buttonId); 
             const titleToCopy = buttonElement.dataset.bsOriginalTitle;
+
+            //Copy title to clipboard
             navigator.clipboard.writeText(titleToCopy)
             .then(() => {
+
+                //If button press was successful, give button an aesthetic class temporarily
                 console.log('Text copied to clipboard!');
                 var curClassName = buttonElement.className
                 buttonElement.className = "btn-outline-success "+curClassName; 
@@ -263,6 +277,8 @@
                 }, 500);
             })
             .catch(err => {
+                
+                //If button press was unsuccessful, give button a different aesthetic class temporarily
                 console.error('Failed to copy text:', err);
                 var curClassName = buttonElement.className
                 buttonElement.className = "btn-outline-danger "+curClassName; 
